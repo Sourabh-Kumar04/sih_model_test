@@ -1,3 +1,4 @@
+```
 MAITRI_AI_Assistant/
 ├── app.py                        # Main entry: integrates UI + AI models
 ├── requirements.txt              # Python dependencies
@@ -63,3 +64,4 @@ MAITRI_AI_Assistant/
     ├── design_architecture.md     # System design
     ├── user_manual.md             # Usage guide
     └── model_training_report.md   # AI model details
+```
