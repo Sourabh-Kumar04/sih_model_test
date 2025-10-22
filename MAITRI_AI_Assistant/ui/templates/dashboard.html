@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAITRI Assistant Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_styling.css') }}">
+    <style>
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MAITRI Assistant Dashboard - {{ config['app_name'] }}</h1>
+        <p>Real-time emotional and health monitoring.</p>
+    </div>
+    <div class="container grid-layout">
+        
+        <!-- Monitoring Panel -->
+        <div class="card">
+            <h2>Live State Monitoring</h2>
+            <div id="alert-display"></div>
+            <p><strong>Current Fused Emotion:</strong> <span id="fused-emotion" class="emotion-display">Loading...</span></p>
+            <p><strong>Stress Index (60s Avg):</strong> <span id="stress-index">0.00</span></p>
+            <p><strong>Fatigue Status:</strong> <span id="fatigue-status">Checking...</span></p>
+            <div id="recommendation-tip" class="card" style="background-color: #edf2f7; margin-top: 15px;">
+                <p><strong>Recommendation:</strong> <span id="current-tip">Take a moment to relax.</span></p>
+            </div>
+            <a href="/monitoring" class="button" style="display: block; text-align: center; margin-top: 10px; background-color: #38a169; color: white; padding: 10px; border-radius: 6px; text-decoration: none;">View Detailed Logs</a>
+        </div>
+
+        <!-- Conversation/Chat Panel -->
+        <div class="card">
+            <h2>Chat with MAITRI</h2>
+            <div id="chat-history" style="height: 300px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                <!-- Chat messages will load here -->
+            </div>
+            <input type="text" id="user-input" placeholder="Type your message..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+            <button onclick="sendMessage()" style="width: 100%; margin-top: 5px; padding: 10px; background-color: #4299e1; color: white; border: none; border-radius: 6px; cursor: pointer;">Send</button>
+        </div>
+
+    </div>
+
+    <!-- Minimal JS for API Interaction -->
+    <script>
+        const stateUrl = '/api/state';
+        const chatUrl = '/api/conversation';
+
+        async function fetchState() {
+            try {
+                const response = await fetch(stateUrl);
+                const data = await response.json();
+                updateUI(data);
+                
+                // Update chat history on dashboard load
+                if (data.conversation_history && data.conversation_history.length > 0) {
+                    renderChatHistory(data.conversation_history);
+                }
+
+            } catch (error) {
+                console.error('Error fetching state:', error);
+            }
+        }
+
+        function updateUI(state) {
+            document.getElementById('fused-emotion').textContent = state.fused_emotion.toUpperCase();
+            document.getElementById('stress-index').textContent = state.stress_index.toFixed(2);
+            document.getElementById('fatigue-status').textContent = state.is_fatigued ? 'HIGH' : 'LOW';
+
+            // Update Alert
+            const alertDisplay = document.getElementById('alert-display');
+            if (state.alert) {
+                alertDisplay.innerHTML = `<div class="alert-critical">${state.alert.message}</div>`;
+                // Optionally redirect to critical_alert.html
+                // window.location.href = '/alert_screen';
+            } else {
+                alertDisplay.innerHTML = '';
+            }
+        }
+
+        async function sendMessage() {
+            const inputElement = document.getElementById('user-input');
+            const message = inputElement.value.trim();
+            if (!message) return;
+
+            inputElement.value = ''; // Clear input
+
+            try {
+                const response = await fetch(chatUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                const data = await response.json();
+                
+                // Render chat history
+                renderChatHistory(data.history);
+                
+                // Display Tip
+                document.getElementById('current-tip').textContent = data.tip;
+
+            } catch (error) {
+                console.error('Error sending message:', error);
+                document.getElementById('current-tip').textContent = 'Error communicating with MAITRI.';
+            }
+        }
+        
+        function renderChatHistory(history) {
+            const chatHistoryElement = document.getElementById('chat-history');
+            chatHistoryElement.innerHTML = '';
+            history.forEach(item => {
+                const p = document.createElement('p');
+                const speakerClass = item.speaker === 'user' ? 'text-right' : 'text-left';
+                const color = item.speaker === 'user' ? '#4299e1' : '#38a169';
+                
+                p.style.textAlign = item.speaker === 'user' ? 'right' : 'left';
+                p.innerHTML = `<span style="background-color: ${color}; color: white; padding: 5px 10px; border-radius: 15px; display: inline-block;">${item.text}</span>`;
+                
+                chatHistoryElement.appendChild(p);
+            });
+            // Scroll to bottom
+            chatHistoryElement.scrollTop = chatHistoryElement.scrollHeight;
+        }
+
+        // Fetch state every 1 second
+        setInterval(fetchState, 1000);
+        fetchState(); // Initial fetch
+    </script>
+</body>
+</html>

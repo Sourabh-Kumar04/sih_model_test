@@ -1,0 +1,55 @@
+/* MAITRI UI Base Styling */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f7f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.header {
+    background-color: #4a5568;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
+    text-align: center;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+/* Emotion visualization placeholder */
+.emotion-display {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.alert-critical {
+    background-color: #f56565;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.7; }
+}

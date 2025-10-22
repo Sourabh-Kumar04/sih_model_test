@@ -1,0 +1,9 @@
+Flask
+PyYAML
+numpy
+scikit-learn
+pyaudio # Requires system dependencies for audio capture
+opencv-python # Requires system dependencies for video capture
+torch
+torchaudio
+torchvision
