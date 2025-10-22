@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAITRI Health Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_styling.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Health Monitoring & Reports</h1>
+        <a href="/" style="color: white; text-decoration: underline;">Back to Dashboard</a>
+    </div>
+    <div class="container">
+        
+        <div class="card">
+            <h2>Stress & Fatigue Over Time</h2>
+            <p>This section would display real-time charts (e.g., using Chart.js) showing stress index and fatigue score trends.</p>
+            <div style="height: 300px; background-color: #f7f7f7; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center;">
+                [Placeholder for Stress/Fatigue Graph]
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Recent Emotional Events</h2>
+            <p>A list of significant emotional events (e.g., Sadness > 80% confidence, Anger > 90% confidence) logged by the ReportGenerator.</p>
+            <ul style="list-style-type: none; padding: 0;">
+                <li>[10:05:22] Elevated Stress Index: 0.78</li>
+                <li>[10:02:15] Primary Emotion: Sad (Confidence: 0.81)</li>
+                <li>[09:55:40] Fatigue Alert: High</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>Data Synchronization Status</h2>
+            <p>Last Ground Sync: <span id="last-sync-time">Checking...</span></p>
+            <p>Reports Pending Sync: <span id="reports-pending">N/A (See console for sync status)</span></p>
+        </div>
+
+    </div>
+</body>
+</html>
